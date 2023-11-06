@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model NoteSubcategory {
+  id    String  @id @default(uuid())
+  name String?
+
+  notes Note[]
+}
+
+model Note {
+  id    String  @id @default(uuid())
+  catId String
+  strId String @unique
+  tags String[]
+  title String
+  content String?
+  icon String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  cat NoteSubcategory @relation(fields: [catId], references: [id])
+}
+
+model Article {
+  id    String  @id @default(uuid())
+  strId String @unique
+  tags String[]
+  title String
+  content String?
+  icon String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model FursuitData {
+  id    String  @id @default(uuid())
+  ownerId String? // Owner Account
+  ownerName String? // Suit Owner Name
+  name  String? // Suit Name
+  ip    String? // Suit IP Address
+  externTemp Int @default(0) // External Suit Tempreature
+  internTemp Int @default(0) // Internal Suit Tempreature
+  fansEnabled Boolean @default(true) // Cooling
+  cyberLinesColor String? // Cyber Lines Color (Not individually controllable, accepts hex)
+  cyberLinesBrightness Int @default(100) // Brightness Percentage
+  cyberCollarText String? @default("<< Lynix >>") // Text
+  cyberEyesColors String[] // Eye Colors (Individually controllable, accepts hex array)
+  audioLink Boolean @default(false) // Audio Link, RGB Rave LEDs when audio is playing
+  suspended Boolean @default(true) // Suit disabled by default
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Projects {
+  id   String  @id @default(uuid())
+  strId String @unique
+  name String
+  description String
+  tags String[]
+  startDate DateTime
+  endDate DateTime?
+  visitLink String?
+  sourceLink String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model MeetupData {
+  id    String  @id @default(uuid())
+  name  String?
+  lat   Float?
+  lon   Float?
+  pin String?
+  endTime DateTime?
+  ended Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+// Conventions + Events
+model Events {
+  id    String  @id @default(uuid())
+  strId String @unique
+  name String 
+  tags String[]
+  description String
+  eventMeetups String[]
+  eventLocation String?
+  eventStart DateTime
+  eventEnd DateTime
+  eventChecklist Json?
+  isFurryConvention Boolean @default(false)
+  status EventStatusEnum @default(PLANNED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+enum EventStatusEnum {
+  PLANNED
+  ONGOING
+  CANCELLED
+  POSTPONED
+}
