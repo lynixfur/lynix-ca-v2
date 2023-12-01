@@ -5,30 +5,27 @@ export async function GET(request: Request) {
     const id = url.searchParams.get('id');
 
     if (id) {
-        let article = await prisma.article.findFirst({
+        let event = await prisma.events.findFirst({
             where: {
-                OR: [
-                    {strId: id},
-                    {id: id}
-                ]
+                id: id.toString()
             }
         });
 
-        if (!article) {
-            return new Response(JSON.stringify({msg: "Article Not Found", success: false}), {
+        if (!event) {
+            return new Response(JSON.stringify({msg: "Event Not Found", success: false}), {
                 status: 404,
                 headers: { "Content-Type": "application/json" },
             });
         }
 
-        return  new Response(JSON.stringify({msg: "Success", success: true, article: article}), {
+        return  new Response(JSON.stringify({msg: "Success", success: true, event: event}), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });
     } else {
-        let articles = await prisma.article.findMany();
+        let events = await prisma.events.findMany();
         
-        return  new Response(JSON.stringify({msg: "Success", success: true, articles: articles}), {
+        return  new Response(JSON.stringify({msg: "Success", success: true, events: events}), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });
